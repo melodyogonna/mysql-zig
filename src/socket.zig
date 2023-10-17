@@ -1,7 +1,14 @@
 const std = @import("std");
 const os = std.os;
+const network = @import("network");
 
-fn connect() !void {
-    const socket = os.socket(os.SOCK.AFINET);
-    _ = socket;
+pub fn makeSocket() !Socket {
+    const socket = try os.socket(os.AF.INET, os.SOCK.STREAM, 0);
+    return Socket{ .fd = socket };
+}
+
+const Socket = struct { fd: os.socket_t };
+
+pub fn connect(s: Socket, addr: *const []u8) os.ConnectError!void {
+    try os.connect(s.fd, addr, 10);
 }

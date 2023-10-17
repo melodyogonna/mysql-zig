@@ -15,6 +15,8 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
+    const network_deb = b.dependency("network", .{ .target = target, .optimize = optimize });
+
     const lib = b.addStaticLibrary(.{
         .name = "mysql_zig",
         // In this case the main source file is merely a path, however, in more
@@ -23,6 +25,8 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+
+    lib.addModule("network", network_deb.module("network"));
 
     // This declares intent for the library to be installed into the standard
     // location when the user invokes the "install" step (the default step when
